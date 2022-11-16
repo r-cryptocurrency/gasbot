@@ -1,0 +1,5 @@
+gasbot/secrets.py
+data/*
+__pycache__
+.DS_Store
+rcc_gasbot.code-workspace
