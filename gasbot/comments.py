@@ -22,7 +22,7 @@ def comment_reply_stats(web3nova, web3matic):
     nova_drips, nova_users = get_nova_drips()
     matic_drips, matic_users = get_matic_drips()
 
-    reply = f"""Some stats for the u/MOON2gas faucet:  
+    reply = f"""Some stats from the u/MOON2gas faucet:  
 
 Currently dispensing:  
 * {AN_ETH_AMT} ETH on Arbitrum Nova network  
