@@ -40,52 +40,57 @@ db.create_tables([User, Drip])
 print(f"********* Starting comment stream on {subreddit.display_name} / {subreddit.name} *********")
 for comment in subreddit.stream.comments(skip_existing=True):
 
-    print(f"****** new comment by {comment.author} at {datetime.datetime.utcnow()} begins: {comment.body[0:20]}")
-    # Get users reddit id
     try:
-        reddit_id = 't2_' + comment.author.id
-        name = comment.author
-        account_bday = datetime.datetime.fromtimestamp(comment.author.created_utc)
-    except Exception as e:
-        print(f"failed to get comment info with error: {e}") 
+    # hacky try/except to catch rate limiting errors from reddit praw
 
-    # If user exists get instance of them from db user table         
-    if check_if_user_exists(name):
-        user = User.get(User.name == name)
-        print(f"*** Found existing user: {name}")
-    # If user doesn't exist create entry in table          
-    else:
-        user = create_user(reddit_id, name, account_bday)
-        print(f"*** Creating user: {name}")
+        print(f"****** new comment by {comment.author} at {datetime.datetime.utcnow()} begins: {comment.body[0:20]}")
+        # Get users reddit id
+        try:
+            reddit_id = 't2_' + comment.author.id
+            name = comment.author
+            account_bday = datetime.datetime.fromtimestamp(comment.author.created_utc)
+        except Exception as e:
+            print(f"failed to get comment info with error: {e}") 
 
-    # Refresh the user if we didn't do it in last half day
-    if (datetime.datetime.utcnow() - user.last_seen).seconds > 42069:
-        user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
-
-    # Check the comment for gas request
-    if comment.body[0:4].lower() == '!gas':
-        print("!!! Found gas request")
-        # Update user if we didn't just do it
-        if (datetime.datetime.utcnow() - user.last_seen).seconds > 10:
-            user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
-        # Handle request for Arbiturm Nova
-        if comment.body[5:9].lower() == 'nova':
-            user.dripCheck('nova', comment, web3nova)
-        # Handle request for Polygon Matic
-        elif comment.body[5:10].lower() == 'matic':
-            user.dripCheck('matic', comment, web3matic)
+        # If user exists get instance of them from db user table         
+        if check_if_user_exists(name):
+            user = User.get(User.name == name)
+            print(f"*** Found existing user: {name}")
+        # If user doesn't exist create entry in table          
         else:
-            comment.reply(body=comment_reply_gaserr(web3nova, web3matic))
+            user = create_user(reddit_id, name, account_bday)
+            print(f"*** Creating user: {name}")
+
+        # Refresh the user if we didn't do it in last half day
+        if (datetime.datetime.utcnow() - user.last_seen).seconds > 42069:
+            user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
+
+        # Check the comment for gas request
+        if comment.body[0:4].lower() == '!gas':
+            print("!!! Found gas request")
+            # Update user if we didn't just do it
+            if (datetime.datetime.utcnow() - user.last_seen).seconds > 10:
+                user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
+            # Handle request for Arbiturm Nova
+            if comment.body[5:9].lower() == 'nova':
+                user.dripCheck('nova', comment, web3nova)
+            # Handle request for Polygon Matic
+            elif comment.body[5:10].lower() == 'matic':
+                user.dripCheck('matic', comment, web3matic)
+            else:
+                comment.reply(body=comment_reply_gaserr(web3nova, web3matic))
 
 
-    # Check the comment for stats request
-    if comment.body[0:6].lower() == '!stats':
-        print("!!! Found stats request")
-        if (datetime.datetime.utcnow() - user.last_stats_time).days > 1: 
-            comment.reply(body=comment_reply_stats(web3nova, web3matic))
-            user.last_stats_time = datetime.datetime.utcnow()
-            user.save()
+        # Check the comment for stats request
+        if comment.body[0:6].lower() == '!stats':
+            print("!!! Found stats request")
+            if (datetime.datetime.utcnow() - user.last_stats_time).days > 1: 
+                comment.reply(body=comment_reply_stats(web3nova, web3matic))
+                user.last_stats_time = datetime.datetime.utcnow()
+                user.save()
 
-    # Sleep so we don't get rate limited on APIs hopefully
-    time.sleep(1)
+        # Sleep so we don't get rate limited on APIs hopefully
+        time.sleep(1)
 
+    except Exception as e:
+        print(f"failed to process comment (probably rate limit): {e}") 
