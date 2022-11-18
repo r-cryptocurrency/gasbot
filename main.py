@@ -66,23 +66,23 @@ for comment in subreddit.stream.comments(skip_existing=True):
             user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
 
         # Check the comment for gas request
-        if comment.body[0:4].lower() == '!gas':
+        if comment.body.split()[0].lower() == '!gas':
             print("!!! Found gas request")
             # Update user if we didn't just do it
             if (datetime.datetime.utcnow() - user.last_seen).seconds > 10:
                 user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
             # Handle request for Arbiturm Nova
-            if comment.body[5:9].lower() == 'nova':
+            if comment.split()[1].lower() == 'nova':
                 user.dripCheck('nova', comment, web3nova)
             # Handle request for Polygon Matic
-            elif comment.body[5:10].lower() == 'matic':
+            elif comment.split()[1].lower() == 'matic':
                 user.dripCheck('matic', comment, web3matic)
             else:
                 comment.reply(body=comment_reply_gaserr(web3nova, web3matic))
 
 
         # Check the comment for stats request
-        if comment.body[0:6].lower() == '!stats':
+        if comment.body.split()[0].lower() == '!stats':
             print("!!! Found stats request")
             if (datetime.datetime.utcnow() - user.last_stats_time).days > 1: 
                 comment.reply(body=comment_reply_stats(web3nova, web3matic))
