@@ -72,10 +72,10 @@ for comment in subreddit.stream.comments(skip_existing=True):
             if (datetime.datetime.utcnow() - user.last_seen).seconds > 10:
                 user.refresh(datetime.datetime.utcnow(), web3nova, web3matic)
             # Handle request for Arbiturm Nova
-            if comment.split()[1].lower() == 'nova':
+            if comment.body.split()[1].lower() == 'nova':
                 user.dripCheck('nova', comment, web3nova)
             # Handle request for Polygon Matic
-            elif comment.split()[1].lower() == 'matic':
+            elif comment.body.split()[1].lower() == 'matic':
                 user.dripCheck('matic', comment, web3matic)
             else:
                 comment.reply(body=comment_reply_gaserr(web3nova, web3matic))
