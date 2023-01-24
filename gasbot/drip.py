@@ -1,9 +1,8 @@
 from gasbot.user import User
 from peewee import *
-from gasbot.constants import *
-from gasbot.secrets import *
+import gasbot.constants as constants
 
-db = SqliteDatabase(DB_FILE)
+db = SqliteDatabase(constants.DB_FILE)
 
 
 class Drip(Model):
