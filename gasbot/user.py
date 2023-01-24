@@ -10,6 +10,7 @@ db = SqliteDatabase(DB_FILE)
 
 
 class User(Model):
+    id = AutoField()
     reddit_id = CharField()
     name = CharField()
     account_bday = DateTimeField()
@@ -82,6 +83,9 @@ class User(Model):
                 print("!!! Gas request denied because too rich")
                 comment.reply(comments.comment_reply_toomucheth(self.name, self.address, self.novaETH_balance))
                 return False     
+            print(self.id)
+            if self.id < 51 and datetime.datetime.now() < datetime.datetime(2023, 2, 20):
+                AN_ETH_AMT = 0.001
             if (datetime.datetime.utcnow() - self.last_nova_drip).days >= DAYS_SINCE_LAST_DRIP_REQ:
                 print("!!!!!! Dripping that ETH.......")
                 signed_tx = build_tx(web3, self.address, AN_ETH_AMT, NOVA_CHAIN_ID)
