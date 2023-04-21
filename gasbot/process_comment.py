@@ -49,3 +49,9 @@ def process_comment(comment, web3nova, web3matic):
         comment.reply(body=comment_reply_stats(web3nova, web3matic))
         user.last_stats_time = datetime.datetime.utcnow()
         user.save()
+        
+    # Check the comment for help request
+    if comment.body.split()[0].lower() == '!help':
+        print("!!! Found help request")
+        comment.reply(body=comment_reply_gaserr(web3nova, web3matic))
+        
