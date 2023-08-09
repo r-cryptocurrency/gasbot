@@ -7,12 +7,12 @@ def comment_reply_gaserr(web3nova, web3matic):
 network faucet by using either the `!gas nova` or  `!gas matic` command if 
 you would like to receive a drip of gas from the faucet.  
 
-Currently dispensing:  
-* {constants.AN_ETH_AMT} ETH on Polygon network 
-* {constants.P_MATIC_AMT} MATIC on Arbitrum Nova network
+**Currently dispensing:**  
+* Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(size depends on previous activity and moons earned)*  
+* {constants.P_MATIC_AMT} MATIC on Arbitrum Nova network  
 
-Remaining Balances:  
-* {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether')} ETH on Arbitrum Nova and    
+**Remaining Balances:**  
+* {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether')} ETH on Arbitrum Nova  
 * {web3nova.fromWei(web3matic.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether')} MATIC on Polygon"""
     return reply
 
@@ -23,15 +23,15 @@ def comment_reply_stats(web3nova, web3matic):
 
     reply = f"""Some stats from the u/MOON2gas faucet:  
 
-Currently dispensing:  
-* {constants.AN_ETH_AMT} ETH on Arbitrum Nova network  
-* {constants.P_MATIC_AMT} MATIC on Arbitrum Nova network 
+**Currently dispensing:**  
+* Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(size depends on previous activity and moons earned)*  
+* {constants.P_MATIC_AMT} MATIC on Arbitrum Nova network  
 
-Remaining Balances:  
-* {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether'):.4f} ETH on Arbitrum Nova and  
+**Remaining Balances:**  
+* {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether'):.4f} ETH on Arbitrum Nova  
 * {web3nova.fromWei(web3matic.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether'):.4f} MATIC on Polygon  
 
-Drips sent:  
+**Drips sent:**  
 * {nova_amt} ETH dispensed in {nova_drips} drips of Arbitrum Nova ETH to {nova_users} unique redditors  
 * {matic_amt} MATIC dispensed in {matic_drips} drips of Polygon MATIC to {matic_users} unique redditors
 """
@@ -54,7 +54,7 @@ on r/CryptoCurrency or r/FortNiteBR."""
 def comment_reply_toomucheth(name, address, balance):
     reply = f"""Hi u/{name}, 
 your address {address} has an Arbitrum Nova ETH balance, 
-{balance} ETH, that is more than 1000x the amount being dispensed
+{balance} ETH, that is more than {constants.TOO_RICH_MULTIPLIER}x the amount being dispensed
 from the faucet right now, only {constants.AN_ETH_AMT} ETH at this time.
 """
     return reply
@@ -63,15 +63,15 @@ from the faucet right now, only {constants.AN_ETH_AMT} ETH at this time.
 def comment_reply_toomuchmatic(name, address, balance):
     reply = f"""Hi u/{name}, 
 your address {address} has a Polygon MATIC balance, 
-{balance} MATIC, that is more than 1000x the amount 
+{balance} MATIC, that is more than {constants.TOO_RICH_MULTIPLIER}x the amount 
 being dispensed from the faucet right now, 
 only {constants.P_MATIC_AMT} MATIC at this time.
 """
     return reply
 
 
-def comment_reply_sendeth(name, address, txid):
-    reply = f"""Hi u/{name}, {constants.AN_ETH_AMT} ETH has been sent
+def comment_reply_sendeth(name, multiplier, address, txid):
+    reply = f"""Hi u/{name}, {constants.AN_ETH_AMT * multiplier} ETH has been sent
 on the Arbitrum Nova Network to your [vault address](https://nova-explorer.arbitrum.io/address/{address}) 
 in [txid](https://nova-explorer.arbitrum.io/tx/{txid})". 
 
