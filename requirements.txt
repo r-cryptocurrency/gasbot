@@ -1,3 +1,4 @@
-
-peewee
-web3
+apscheduler==3.*
+peewee==3.*
+praw==7.7.1
+web3==5.*
