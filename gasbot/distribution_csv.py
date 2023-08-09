@@ -1,12 +1,12 @@
 import os
 import requests
 from datetime import datetime, timedelta
-from gasbot.constants import START_SNAPSHOT_DATE, START_SNAPSHOT_ROUND
+from constants import START_SNAPSHOT_DATE, START_SNAPSHOT_ROUND
 
 def calculate_snapshot_date():
     now = datetime.utcnow()
     snapshot_date = datetime.fromisoformat(START_SNAPSHOT_DATE)
-    while now - snapshot_date >= timedelta(days=28):
+    while now >= snapshot_date:  
         snapshot_date += timedelta(days=28)
     return snapshot_date
 
@@ -45,3 +45,5 @@ def download_and_save_csv():
         print(f"CSV saved to {filepath}")
     else:
         print(f"Failed to download CSV for round {round_number - 1}")
+
+print(calculate_snapshot_date())
