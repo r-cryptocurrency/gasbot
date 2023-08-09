@@ -2,6 +2,7 @@ import datetime
 import praw
 import requests
 import time
+from apscheduler.schedulers.background import BackgroundScheduler
 from peewee import *
 from web3 import Web3
 from gasbot.process_comment import process_comment
@@ -10,6 +11,7 @@ from gasbot.constants import *
 from gasbot.user import *
 from gasbot.comments import *
 from gasbot.drip import *
+from gasbot.distribution_csv import download_and_save_csv, calculate_snapshot_date
 
 
 # Setup connections
@@ -35,6 +37,14 @@ class BaseModel(Model):
     class Meta:
         database = db
 db.create_tables([User, Drip])
+
+# Dowload and update distribution CSV every 28 days
+scheduler = BackgroundScheduler(timezone="UTC")
+download_and_save_csv()
+scheduler.add_job(lambda: scheduler.add_job(download_and_save_csv, 'interval', days=28), 
+                  trigger='date', run_date=calculate_snapshot_date())
+scheduler.start()
+
 
 # Main loop for processing comments
 print(f"********* Starting comment stream on {subreddit.display_name} / {subreddit.name} *********")
