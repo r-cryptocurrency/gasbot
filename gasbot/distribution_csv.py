@@ -1,7 +1,7 @@
 import os
 import requests
 from datetime import datetime, timedelta
-from constants import START_SNAPSHOT_DATE, START_SNAPSHOT_ROUND
+from gasbot.constants import START_SNAPSHOT_DATE, START_SNAPSHOT_ROUND
 
 def calculate_snapshot_date():
     now = datetime.utcnow()
