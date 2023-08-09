@@ -23,7 +23,7 @@ def calculate_round_number():
 
 
 def download_and_save_csv():
-    print("***********Downloading distribution CSV data from reddit...************")
+    print("***********Downloading distribution CSV data from reddit************")
     round_number = calculate_round_number()
     csv_url_1 = f"https://reddit-meta-production.s3.amazonaws.com/distribution/publish/CryptoCurrency/round_{round_number}_finalized.csv"
     csv_url_2 = f"https://reddit-meta-production.s3.amazonaws.com/distribution/publish/CryptoCurrency/round_{round_number - 1}_finalized.csv"
@@ -46,4 +46,4 @@ def download_and_save_csv():
     else:
         print(f"Failed to download CSV for round {round_number - 1}")
 
-print(calculate_snapshot_date())
+    print(f"*******Next update scheduled for {calculate_snapshot_date()} UTC*******")
