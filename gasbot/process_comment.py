@@ -45,6 +45,7 @@ def process_comment(comment, web3nova, web3matic):
     # Check the comment for stats request
     if comment.body.split()[0].lower() == '!stats':
         print("!!! Found stats request")
+        # Only allow one stat request per hour for each address
         if (datetime.datetime.utcnow() - user.last_stats_time).total_seconds() > 3600: # 1 hour
             comment.reply(body=comment_reply_stats(web3nova, web3matic))
             user.last_stats_time = datetime.datetime.utcnow()
