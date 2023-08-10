@@ -9,7 +9,7 @@ you would like to receive a drip of gas from the faucet.
 
 **Currently dispensing:**  
 * Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(amount depends on previous activity and moons earned)*  
-* Up to {constants.P_MATIC_AMT} MATIC on Polygon network *(size depends on previous activity and moons earned)*  
+* Up to {constants.P_MATIC_AMT} MATIC on Polygon network *(amount depends on previous activity and moons earned)*  
 
 **Remaining Balances:**  
 * {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether')} ETH on Arbitrum Nova  
@@ -24,8 +24,8 @@ def comment_reply_stats(web3nova, web3matic):
     reply = f"""Some stats from the u/MOON2gas faucet:  
 
 **Currently dispensing:**  
-* Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(size depends on previous activity and moons earned)*  
-* Up to {constants.P_MATIC_AMT} MATIC on Polygon network *(size depends on previous activity and moons earned)*  
+* Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(amount depends on previous activity and moons earned)*  
+* Up to {constants.P_MATIC_AMT} MATIC on Polygon network *(amount depends on previous activity and moons earned)*  
 
 **Remaining Balances:**  
 * {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether'):.4f} ETH on Arbitrum Nova  
