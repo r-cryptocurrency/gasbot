@@ -86,15 +86,20 @@ class User(Model):
                 return False     
             if (datetime.utcnow() - self.last_nova_drip).days >= constants.DAYS_SINCE_LAST_DRIP_REQ:
                 print("!!!!!! Dripping that ETH.......")
+
                 # calculate drip multiplier based on distribution history
                 drip_multiplier = get_drip_multiplier(self)
+
+                # send transaction
                 signed_tx = build_tx(web3, self.address, constants.AN_ETH_AMT, constants.NOVA_CHAIN_ID)
                 txid = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
                 comment.reply(comments.comment_reply_sendeth(self.name, drip_multiplier, self.address, web3.toHex(txid)))
+
+                # save drip data to db
                 self.last_nova_drip = datetime.utcnow()
                 self.nova_drips += 1
                 self.save()
-                drip = Drip.create(reddit_id = self.reddit_id,
+                Drip.create(reddit_id = self.reddit_id,
                                     user = self,
                                     drip_date = datetime.utcnow(),
                                     gas_type = 'nova',
@@ -111,14 +116,20 @@ class User(Model):
                 return False 
             if (datetime.utcnow() - self.last_matic_drip).days >= constants.DAYS_SINCE_LAST_DRIP_REQ:
                 print("!!!!!! Dripping that MATIC.......")
+
+                # calculate drip multiplier based on distribution history
                 drip_multiplier = get_drip_multiplier(self)
+
+                # send transaction
                 signed_tx = build_tx(web3, self.address, constants.P_MATIC_AMT * drip_multiplier, constants.MATIC_CHAIN_ID)
                 txid = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
                 comment.reply(comments.comment_reply_sendmatic(self.name, drip_multiplier, self.address, web3.toHex(txid)))
+
+                # save drip data to db
                 self.last_matic_drip = datetime.utcnow()
                 self.matic_drips += 1
                 self.save()
-                drip = Drip.create(reddit_id = self.reddit_id,
+                Drip.create(reddit_id = self.reddit_id,
                                    user = self,
                                    drip_date = datetime.utcnow(),
                                    gas_type = 'matic',
