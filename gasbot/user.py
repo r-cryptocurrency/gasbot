@@ -111,9 +111,10 @@ class User(Model):
                 return False 
             if (datetime.utcnow() - self.last_matic_drip).days >= constants.DAYS_SINCE_LAST_DRIP_REQ:
                 print("!!!!!! Dripping that MATIC.......")
-                signed_tx = build_tx(web3, self.address, constants.P_MATIC_AMT, constants.MATIC_CHAIN_ID)
+                drip_multiplier = get_drip_multiplier(self)
+                signed_tx = build_tx(web3, self.address, constants.P_MATIC_AMT * drip_multiplier, constants.MATIC_CHAIN_ID)
                 txid = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-                comment.reply(comments.comment_reply_sendmatic(self.name, self.address, web3.toHex(txid)))
+                comment.reply(comments.comment_reply_sendmatic(self.name, drip_multiplier, self.address, web3.toHex(txid)))
                 self.last_matic_drip = datetime.utcnow()
                 self.matic_drips += 1
                 self.save()
@@ -121,7 +122,7 @@ class User(Model):
                                    user = self,
                                    drip_date = datetime.utcnow(),
                                    gas_type = 'matic',
-                                   amount = constants.P_MATIC_AMT)
+                                   amount = constants.P_MATIC_AMT * drip_multiplier)
                 return True
             else:
                 print("!!! Gas request denied because too recent")
