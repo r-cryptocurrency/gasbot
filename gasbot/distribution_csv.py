@@ -66,7 +66,7 @@ def check_address_in_csvs(vault_address):
         with open(file_path, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if row["blockchain_address"].lower() == vault_address.lower() and int(row["karma"]) >= 5:
+                if row["blockchain_address"].lower() == vault_address.lower():
                     return int(row["karma"])
         return 0
     
