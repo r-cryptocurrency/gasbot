@@ -8,8 +8,8 @@ network faucet by using either the `!gas nova` or  `!gas matic` command if
 you would like to receive a drip of gas from the faucet.  
 
 **Currently dispensing:**  
-* Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(size depends on previous activity and moons earned)*  
-* {constants.P_MATIC_AMT} MATIC on Arbitrum Nova network  
+* Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(amount depends on previous activity and moons earned)*  
+* Up to {constants.P_MATIC_AMT} MATIC on Polygon network *(size depends on previous activity and moons earned)*  
 
 **Remaining Balances:**  
 * {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether')} ETH on Arbitrum Nova  
@@ -25,7 +25,7 @@ def comment_reply_stats(web3nova, web3matic):
 
 **Currently dispensing:**  
 * Up to {constants.AN_ETH_AMT} ETH on Arbitrum Nova network *(size depends on previous activity and moons earned)*  
-* {constants.P_MATIC_AMT} MATIC on Arbitrum Nova network  
+* Up to {constants.P_MATIC_AMT} MATIC on Polygon network *(size depends on previous activity and moons earned)*  
 
 **Remaining Balances:**  
 * {web3nova.fromWei(web3nova.eth.get_balance(constants.MOON2GAS_ADDRESS), 'ether'):.4f} ETH on Arbitrum Nova  
@@ -85,8 +85,8 @@ can donate Arbitrum Nova ETH or Polygon MATIC to the following address:
     return reply
 
 
-def comment_reply_sendmatic(name, address, txid):
-    reply = f"""Hi u/{name}, {constants.P_MATIC_AMT} MATIC has been sent
+def comment_reply_sendmatic(name, multipier, address, txid):
+    reply = f"""Hi u/{name}, {constants.P_MATIC_AMT * multipier} MATIC has been sent
 on the Polygon Network to your [vault address](https://polygonscan.com/address/{address}) 
 in [txid](https://polygonscan.com/tx/{txid}). 
 
