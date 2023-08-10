@@ -91,7 +91,7 @@ class User(Model):
                 drip_multiplier = get_drip_multiplier(self)
 
                 # send transaction
-                signed_tx = build_tx(web3, self.address, constants.AN_ETH_AMT, constants.NOVA_CHAIN_ID)
+                signed_tx = build_tx(web3, self.address, constants.AN_ETH_AMT * drip_multiplier, constants.NOVA_CHAIN_ID)
                 txid = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
                 comment.reply(comments.comment_reply_sendeth(self.name, drip_multiplier, self.address, web3.toHex(txid)))
 
