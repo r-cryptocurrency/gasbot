@@ -46,8 +46,8 @@ as well, but that is not currently implemented.
 
 The faucet is currently paying out:
 
-* 0.00005 ETH on Arbitrum Nova network (enough to cover 3-5 MOON transfers)
-* 0.02 MATIC on Polygon network (enough to cover 1-2 NFT transfers)
+* 0.00004 ETH on Arbitrum Nova network (enough to cover 30-50 MOON transfers)
+* 0.04 MATIC on Polygon network (enough to cover 2-4 NFT transfers)
 
 ## Code
 
