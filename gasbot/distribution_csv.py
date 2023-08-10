@@ -55,9 +55,6 @@ def download_and_save_csv():
 def check_address_in_csvs(vault_address):
     """
     Checks if the address is present in the distribution CSVs with at least 5 karma.
-    
-    Args:
-        address (str): The address to verify.
         
     Returns:
         tuple: (karma_in_current_csv, karma_in_previous_csv)
