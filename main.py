@@ -52,9 +52,10 @@ for comment in subreddit.stream.comments(skip_existing=True):
 
     #try:
     # hacky try/except to catch rate limiting errors from reddit praw
-        process_comment(comment, web3nova, web3matic)
-        # Sleep so we don't get rate limited on APIs hopefully
-        time.sleep(1)
+        if (comment.author != "MOON2gas"):
+            process_comment(comment, web3nova, web3matic)
+            # Sleep so we don't get rate limited on APIs hopefully
+            time.sleep(1)
 
     #except Exception as e:
     #    print(f"failed to process comment (probably rate limit): {e}")
