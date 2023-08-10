@@ -2,6 +2,7 @@ from datetime import datetime
 import requests
 from peewee import *
 from gasbot.secrets import priv_key
+from gasbot.distribution_csv import check_address_in_csvs
 import gasbot.comments as comments
 import gasbot.constants as constants
 
@@ -85,9 +86,11 @@ class User(Model):
                 return False     
             if (datetime.utcnow() - self.last_nova_drip).days >= constants.DAYS_SINCE_LAST_DRIP_REQ:
                 print("!!!!!! Dripping that ETH.......")
+                # calculate drip multiplier based on distribution history
+                drip_multiplier = get_drip_multiplier(self)
                 signed_tx = build_tx(web3, self.address, constants.AN_ETH_AMT, constants.NOVA_CHAIN_ID)
                 txid = web3.eth.send_raw_transaction(signed_tx.rawTransaction)
-                comment.reply(comments.comment_reply_sendeth(self.name, self.address, web3.toHex(txid)))
+                comment.reply(comments.comment_reply_sendeth(self.name, drip_multiplier, self.address, web3.toHex(txid)))
                 self.last_nova_drip = datetime.utcnow()
                 self.nova_drips += 1
                 self.save()
@@ -95,7 +98,7 @@ class User(Model):
                                     user = self,
                                     drip_date = datetime.utcnow(),
                                     gas_type = 'nova',
-                                    amount = constants.AN_ETH_AMT)
+                                    amount = constants.AN_ETH_AMT * drip_multiplier)
                 return True
             else:
                 comment.reply(comments.comment_reply_novathirty(self.name, self.last_nova_drip))
@@ -125,7 +128,39 @@ class User(Model):
                 comment.reply(comments.comment_reply_maticthirty(self.name, self.last_matic_drip))
                 return False  
 
-    
+
+def get_drip_multiplier(self):
+    """
+    Determines the size multiplier of the ETH drip for the user based on the following criteria:
+
+    - Full Drip (multiplier: 1.0):
+        - Present in the two most recent distribution CSVs with over 50 karma.
+        - Moon earned/balance of at least 100.
+
+    - Half Drip (multiplier: 0.5):
+        - Present in the most recent distribution CSV with over 5 karma.
+        - Moon earned/balance of at least 10.
+
+    - Small Drip (multiplier: 0.2):
+        - Has at least 1 moon or brick.
+
+    Returns:
+        float: Multiplier value (1.0, 0.5, 0.2) indicating the size of the drip the user qualifies for.
+    """
+    karma_in_current_csv, karma_in_previous_csv = check_address_in_csvs(self.address)
+
+    if (karma_in_current_csv >= 50 and karma_in_previous_csv >= 50 and
+        self.moon_balance >= 100 and self.moon_earned >= 100):
+        print(f"full-drip authorized for {self.name}")
+        return 1.0
+    elif karma_in_current_csv >= 5 and self.moon_balance >= 10 and self.moon_earned >= 10:
+        print(f"half-drip authorized for {self.name}")
+        return 0.5
+    else:
+        print(f"basic drip authorized for {self.name}")
+        return 0.2
+
+
 def create_user(reddit_id, name, account_bday):
     user = User.create(reddit_id = reddit_id,
                         name = name,
