@@ -50,12 +50,11 @@ scheduler.start()
 print(f"********* Starting comment stream on {subreddit.display_name} / {subreddit.name} *********")
 for comment in subreddit.stream.comments(skip_existing=True):
 
-    #try:
-    # hacky try/except to catch rate limiting errors from reddit praw
+    try:
+        # only process comments from other users
         if (comment.author != "MOON2gas"):
             process_comment(comment, web3nova, web3matic)
-            # Sleep so we don't get rate limited on APIs hopefully
             time.sleep(1)
 
-    #except Exception as e:
-    #    print(f"failed to process comment (probably rate limit): {e}")
+    except Exception as e:
+       print(f"failed to process comment (probably rate limit): {e}")
