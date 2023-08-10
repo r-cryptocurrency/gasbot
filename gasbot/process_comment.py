@@ -1,5 +1,5 @@
 import datetime
-from gasbot.comments import comment_reply_gaserr, comment_reply_stats
+from gasbot.comments import *
 from gasbot.user import User, check_if_user_exists, create_user
 
 
@@ -45,7 +45,9 @@ def process_comment(comment, web3nova, web3matic):
     # Check the comment for stats request
     if comment.body.split()[0].lower() == '!stats':
         print("!!! Found stats request")
-        #if (datetime.datetime.utcnow() - user.last_stats_time).days > 1:
-        comment.reply(body=comment_reply_stats(web3nova, web3matic))
-        user.last_stats_time = datetime.datetime.utcnow()
-        user.save()
+        if (datetime.datetime.utcnow() - user.last_stats_time).total_seconds() > 3600: # 1 hour
+            comment.reply(body=comment_reply_stats(web3nova, web3matic))
+            user.last_stats_time = datetime.datetime.utcnow()
+            user.save()
+        else:
+            comment.reply(body=comment_reply_stats_too_often(comment.author))

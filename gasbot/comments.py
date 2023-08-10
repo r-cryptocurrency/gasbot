@@ -120,3 +120,7 @@ def comment_reply_maticthirty(name, last_drip):
 Polygon MATIC faucet once every {constants.DAYS_SINCE_LAST_DRIP_REQ} days. You last received a drip
 {(datetime.datetime.utcnow() - last_drip).days} days ago """
     return reply 
+
+def comment_reply_stats_too_often(name):
+    reply = f"Hi u/{name}, you can only use the ```!stats``` command once per hour. Please try again later."
+    return reply
