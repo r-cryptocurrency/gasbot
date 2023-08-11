@@ -141,7 +141,7 @@ class User(Model):
                 return False  
 
 
-def get_drip_multiplier(self):
+def get_drip_multiplier(user):
     """
     Determines the size multiplier of the ETH drip for the user based on the following criteria:
 
@@ -159,17 +159,17 @@ def get_drip_multiplier(self):
     Returns:
         float: Multiplier value (1.0, 0.5, 0.2) indicating the size of the drip the user qualifies for.
     """
-    karma_in_current_csv, karma_in_previous_csv = check_address_in_csvs(self.address)
+    karma_in_current_csv, karma_in_previous_csv = check_address_in_csvs(user.address)
 
     if (karma_in_current_csv >= 50 and karma_in_previous_csv >= 50 and
-        self.moon_balance >= 100 and self.moon_earned >= 100):
-        print(f"full-drip authorized for {self.name}")
+        user.moon_balance >= 100 and user.moon_earned >= 100):
+        print(f"full-drip authorized for {user.name}")
         return 1.0
-    elif karma_in_current_csv >= 5 and self.moon_balance >= 10 and self.moon_earned >= 10:
-        print(f"half-drip authorized for {self.name}")
+    elif karma_in_current_csv >= 5 and user.moon_balance >= 10 and user.moon_earned >= 10:
+        print(f"half-drip authorized for {user.name}")
         return 0.5
     else:
-        print(f"basic drip authorized for {self.name}")
+        print(f"basic drip authorized for {user.name}")
         return 0.2
 
 
